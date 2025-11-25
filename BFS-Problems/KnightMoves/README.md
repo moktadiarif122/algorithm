@@ -1,48 +1,38 @@
-# ♞ Knight Moves (BFS in 2D Grid) — নাইটের সংক্ষিপ্ত পথ
+♞ Knight Moves (BFS in 2D Grid) — Knight’s Shortest Path
+🔍 What is the Problem?
 
-## 🔍 সমস্যাটি কী?
+The task of this problem is to solve a classic shortest path scenario.
+The specific objective is: given two squares a and b on a chessboard,
+determine the minimum number of moves a knight needs to go from a to b.
 
-আমাদের এই সমস্যাটির কাজ হলো একটি ক্লাসিক **‘shortest path’** এর সমাধান করা।  
-সমস্যাটির নির্দিষ্ট লক্ষ্য হলো: দাবাবোর্ডের দুটি স্কয়ার **a** এবং **b** দেওয়া থাকলে,  
-**a থেকে b তে পৌঁছাতে নাইটের সর্বনিম্ন কতগুলো চাল লাগবে!**
+This problem can be modeled as a shortest path problem in an unweighted graph.
 
-এই সমস্যাটিকে একটি **unweighted graph** এর সংক্ষিপ্ততম পথ খোঁজার সমস্যা হিসাবে মডেল করা যেতে পারে।
+🎯 Modeling
+Concept	Description
+Nodes	The 64 squares of the chessboard represent the nodes
+Edges	A valid knight move between two squares represents an edge
+Cost	Each move has equal cost (i.e., 1 move)
 
----
+Therefore, the most ideal algorithm to find the shortest path in such a graph is
+Breadth-First Search (BFS).
 
-## 🎯 মডেলিং
+🧠 What is BFS?
 
-| ধারণা | অর্থ |
-|--------|------|
-| **নোড (Nodes)** | দাবাবোর্ডের ৬৪টি স্কয়ার হলো এই গ্রাফের নোড |
-| **এজ (Edges)** | দুটি স্কয়ারের মধ্যে একটি বৈধ নাইটের চাল হলো একটি এজ |
-| **Cost** | প্রতিটি চালের cost সমান (অর্থাৎ ১ চাল) |
+BFS (Breadth-First Search) is a graph traversal algorithm that starts from a source node and explores
+the graph level by level based on distance.
 
-তাই এই ধরনের গ্রাফে সংক্ষিপ্ততম পথ খোঁজার জন্য সবচেয়ে আদর্শ অ্যালগরিদম হলো  
-**Breadth-First Search (BFS)**।
+It uses a Queue data structure and guarantees that a longer path is never explored before a shorter one.
 
----
+For unweighted graphs (like this knight movement problem), BFS is the most effective method to find the shortest path.
 
-## 🧠 BFS কী?
+🎲 Representing the Board and Knight Moves
 
-**BFS**, বা **ব্রেডথ-ফার্স্ট সার্চ**, হলো একটি গ্রাফ ট্রাভার্সাল অ্যালগরিদম যা শুরু নোড থেকে শুরু করে  
-গ্রাফটিকে দূরত্ব অনুযায়ী স্তর-স্তরে (**level by level**) search করে।  
+Before applying BFS, we must represent how a knight can move from one square to another.
 
-এটি **Queue** ডেটা স্ট্রাকচার ব্যবহার করে এবং নিশ্চিত করে যে সংক্ষিপ্ততম পথে পৌঁছানোর আগে  
-এটি কোনো দীর্ঘ পথে যাবে না।  
+♘ The 8 Possible Knight Moves
 
-ওজনহীন গ্রাফে (যেমন এই নাইটের সমস্যা), এটিই সংক্ষিপ্ততম পথ খুঁজে বের করার সবচেয়ে কার্যকর উপায়।
+From a position (i, j), a knight can move to at most 8 different squares:
 
----
-
-## 🎲 বোর্ড এবং নাইটের চাল রিপ্রেজেন্ট করা
-
-BFS অ্যালগরিদম ব্যবহার করার আগে আমাদের গ্রাফটিকে কোডে রিপ্রেজেন্ট করতে হবে,  
-অর্থাৎ একটি নাইট কীভাবে এক স্কয়ার থেকে অন্য স্কয়ারে যেতে পারে তা সংজ্ঞায়িত করতে হবে।
-
-### ♘ নাইটের ৮টি সম্ভাব্য চাল
-
-(i, j) পজিশন থেকে নাইট সর্বোচ্চ ৮টি ভিন্ন স্কয়ারে যেতে পারে:
 (i-2, j+1)
 (i-2, j-1)
 (i-1, j+2)
@@ -52,53 +42,44 @@ BFS অ্যালগরিদম ব্যবহার করার আগে 
 (i+2, j+1)
 (i+2, j-1)
 
-
----
-
-### 💻 কোডে রূপান্তর
-
-```cpp
-// kr[] অ্যারে ৮টি সম্ভাব্য সারির পরিবর্তন সংরক্ষণ করে 
+💻 Implementation in Code
+// kr[] array stores the possible row changes 
 const int kr[] = {2, 2, -2, -2, 1, 1, -1, -1}; 
 
-// kc[] অ্যারে ৮টি সম্ভাব্য কলামের পরিবর্তন সংরক্ষণ করে 
+// kc[] array stores the possible column changes 
 const int kc[] = {1, -1, 1, -1, 2, -2, 2, -2}; 
-```
-এখন, `i = 0` থেকে `7` পর্যন্ত একটি লুপ চালিয়ে  
-`new_r = r + kr[i]` এবং `new_c = c + kc[i]` করলেই  
-আমরা যেকোনো স্কয়ার `(r, c)` থেকে ৮টি সম্ভাব্য নতুন স্কয়ার পেয়ে যাব।
 
----
 
-## ⚙️ Breadth-First Search (BFS) এর ব্যবহার
+By running a loop from i = 0 to 7 and calculating:
+new_r = r + kr[i] and new_c = c + kc[i],
+we can obtain all possible reachable squares from position (r, c).
 
-BFS এই সমস্যার জন্য উপযুক্ত কারণ এটি গ্রাফটিকে **layer অনুযায়ী** explore করে।  
+⚙️ Using Breadth-First Search (BFS)
 
-- **Layer 0:** শুরুর স্কয়ার (দূরত্ব ০)  
-- **Layer 1:** ১ চালে পৌঁছানো যায় এমন সব স্কয়ার  
-- **Layer 2:** ২ চালে পৌঁছানো যায় এমন সব স্কয়ার  
-... এবং এভাবে চলতে থাকে।  
+BFS is perfect for this problem because it explores the graph layer by layer.
 
-যেই মুহূর্তে আমরা প্রথমবার আমাদের গন্তব্য স্কয়ারে পৌঁছাব,  
-আমরা নিশ্চিত থাকতে পারি যে এটিই **সংক্ষিপ্ততম পথ।**
+Layer 0: Starting square (distance 0)
 
----
+Layer 1: Squares reachable in 1 move
 
-## 🧩 প্রয়োজনীয় অ্যারে
+Layer 2: Squares reachable in 2 moves
+... and so on.
 
-| নাম | কাজ |
-|-----|------|
-| `dist[8][8]` | শুরুর স্কয়ার থেকে অন্য প্রতিটি স্কয়ারের দূরত্ব (ন্যূনতম চালের সংখ্যা) |
-| `color[8][8]` | প্রতিটি স্কয়ারের অবস্থা ট্র্যাক করে |
-| `queue<pair<int,int>> q` | পরবর্তী ধাপে ভিজিট করার জন্য স্কয়ার সংরক্ষণ করে |
+The moment we first reach the destination square,
+we can be sure that this is the shortest path.
 
----
+🧩 Required Arrays
+Name	Purpose
+dist[8][8]	Stores the minimum number of moves from the start square to each square
+color[8][8]	Tracks the visiting state of each square
+queue<pair<int,int>> q	Holds squares to be processed next
+🎨 Meaning of Color Values
 
-### 🎨 color এর মানের অর্থ
+-1 → White (Not visited)
 
-- `-1` → সাদা (ভিজিট করা হয়নি)  
-- `1` → ধূসর (queue তে আছে)  
-- `2` → কালো (প্রসেস করা শেষ)
+1 → Gray (In queue)
+
+2 → Black (Processing completed)
 
 ## 🧮 PseudoCode
 
