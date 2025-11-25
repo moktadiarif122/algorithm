@@ -1,44 +1,46 @@
-# Second Shortest Path (Modified Dijkstra Algorithm)
+Second Shortest Path (Modified Dijkstra Algorithm)
 
-Robin একটি গ্রামে থাকে যেখানে মোট **Nটি intersection** এবং **Rটি bidirectional রাস্তা** আছে।  
-তার গন্তব্য `1 → N`, কিন্তু সে **shortest path না নিয়ে** **second-shortest path** নিতে চায়।
+Robin lives in a village with a total of N intersections and R bidirectional roads.
+His destination is from 1 → N, but he wants to take the second-shortest path instead of the shortest one.
 
-## 🧠 Problem Definition
+🧠 Problem Definition
 
-Second-shortest path বলতে বোঝায়:
+A second-shortest path is defined as:
 
-- এটি **shortest path এর চেয়ে বড়**
-- কিন্তু **অন্য সব বড় পথের চেয়ে ছোট**
-- এমনকি চাইলে **edge পুনরায় ব্যবহার** করা যেতে পারে
-- গ্রাফে **positive weights**
+It is longer than the shortest path
 
-আমাদের প্রতিটি test case-এ  
-`Case X: second_shortest_path_cost`  
-প্রিন্ট করতে হবে।
+But smaller than all other longer paths
 
----
+Edges can be reused if needed
 
-## 🔍 Algorithm Overview — Modified Dijkstra
+The graph has positive weights
 
-আমরা প্রতিটি নোডের জন্য রাখব দুইটি distance:
+For each test case, we need to print:
 
-- `dist1[v]` → shortest distance to `v`
-- `dist2[v]` → second-shortest distance to `v`
+Case X: second_shortest_path_cost
+
+🔍 Algorithm Overview — Modified Dijkstra
+
+For each node, we will maintain two distances:
+
+dist1[v] → shortest distance to vertex v
+
+dist2[v] → second-shortest distance to vertex v
 
 Relaxation rule:
 
-1. যদি নতুন পথ **shortest** এর থেকে ছোট হয়:
-   - নতুন shortest সেট করো
-   - পুরনো shortest কপি করে second-shortest বানাও
+If a new path is smaller than the current shortest:
 
-2. যদি shortest < নতুন পথ < second-shortest:
-   - second-shortest আপডেট করো
+Set the new shortest
 
-Dijkstra’s priority queue নিশ্চিত করে যে  
-**সবসময় ছোট দূরত্ব আগে প্রসেস হবে**,  
-তাই এই দুই distance ঠিকভাবে maintain হয়।
+Copy the old shortest as the second-shortest
 
----
+If shortest < new path < second-shortest:
+
+Update the second-shortest
+
+Dijkstra’s priority queue ensures that smaller distances are always processed first,
+so these two distances are maintained correctly.
 
 ## 📌 Input Format
 T
